@@ -272,18 +272,18 @@ router.post('/api/upLoads',(req,res,next)=>{
   // console.log(req.files.length)
   // console.log('jjjjjjjj')
 
-  fs.rename(oldPath, newPath, function (err) {
+    fs.rename(oldPath, newPath, function (err) {
         if(err) {
             res.json({
-        code:'400',
-        msg:'上传失败'
-      })
+		        code:'400',
+		        msg:'上传失败'
+		      })
         }else{
             res.json({
-        code:'200',
-        newFileName:newFileName,
-        msg:'ok'
-      })
+		        code:'200',
+		        newFileName:newFileName,
+		        msg:'ok'
+		    })
         }
     })
 

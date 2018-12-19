@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var moment = require('moment');
-
+const pathLib=require('path');
+const fs=require('fs');
 var db = require('../mysql/mysql.js');
 
 
@@ -125,11 +126,13 @@ router.post('/editQuantity',(req,res,next)=>{
 		})
 	})
 })
-
+// console.log(__filename)
+// console.log(pathLib.resolve('./'))
 // 删除产品
 router.post('/delete',(req,res,next)=>{
-	var sql=`delete from cb_product where product_id in (`+req.body.product_id+`)`;
-	db.query(sql,(err,rows,fields)=>{
+	var sql2=`select * from cb_product where product_id in (`+req.body.product_id+`)`;
+
+	db.query(sql2,(err,rows,fields)=>{
 		if (err) {
 			console.log(err)
 			return res.json({
@@ -138,11 +141,31 @@ router.post('/delete',(req,res,next)=>{
 			})
 		}
 
-		res.json({
-			code:'200',
-			msg:'ok'
+		if (rows[0].product_image) {
+			fs.unlink(pathLib.resolve('./')+'/public/upload/'+rows[0].product_image, function (err) {
+			    if (err) return console.log(err);
+			    console.log(rows[0].product_image+'删除成功');
+			})
+		}
+
+
+		var sql=`delete from cb_product where product_id in (`+req.body.product_id+`)`;
+		db.query(sql,(err,rows,fields)=>{
+			if (err) {
+				console.log(err)
+				return res.json({
+					code:'500',
+					msg:'系统错误'
+				})
+			}
+			res.json({
+				code:'200',
+				msg:'ok'
+			})
 		})
 	})
+
+	
 })
 
 
